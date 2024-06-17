@@ -57,7 +57,7 @@ En este laboratorio, aprenderás los conceptos básicos sobre el uso de TCPView 
 
 ## Contribuciones
 
-Las contribuciones son bienvenidas. Si deseas contribuir con un artículo o laboratorio, por favor sigue los pasos descritos en el archivo `CONTRIBUTING.md`.
+Las contribuciones son bienvenidas. Si deseas contribuir con un artículo o laboratorio, por favor sigue los pasos descritos en el archivo [`CONTRIBUTING.md`](https://github.com/rsessa/DataAnalysis/blob/main/CONTRIBUTING.md).
 
 ## Licencia
 
