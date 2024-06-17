@@ -49,7 +49,8 @@ En este artículo, exploramos cómo utilizar TCPView para monitorear y analizar 
 
 ## Laboratorios
 
-### Laboratorio 1: Uso Básico de TCPView
+### [Laboratorio 1: Uso Básico de TCPView](https://github.com/rsessa/DataAnalysis/blob/main/SysInternals%2FTCPView%2FLAB1.%20Uso%20B%C3%A1sico%20de%20TCPView.md)
+
 En este laboratorio, aprenderás los conceptos básicos sobre el uso de TCPView para monitorear conexiones de red.
 
 
