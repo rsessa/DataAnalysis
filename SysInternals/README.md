@@ -61,7 +61,7 @@ Las contribuciones son bienvenidas. Si deseas contribuir con un artículo o labo
 
 ## Licencia
 
-Este proyecto está licenciado bajo los términos de la licencia MIT. Consulta el archivo [`LICENSE`](https://github.com/rsessa/DataAnalysis/blob/main/LICENSE.md) para más detalles.
+Este proyecto está licenciado bajo los términos de la licencia GNU General Public License v3.0 (GPL-3.0). Consulta el archivo [`LICENSE`](https://github.com/rsessa/DataAnalysis/blob/main/LICENSE.md) para más detalles.
 
 ---
 
