@@ -1,0 +1,30 @@
+# Definir la URL de la página web
+$url = "https://learn.microsoft.com/en-us/windows-hardware/drivers/ifs/allocated-altitudes"
+
+# Usar Invoke-WebRequest para obtener el contenido de la página
+$response = Invoke-WebRequest -Uri $url
+
+# Utilizar el DOM del HTML para navegar y extraer los datos necesarios
+$dom = New-Object -ComObject "HTMLFile"
+$dom.IHTMLDocument2_write($response.Content)
+
+# Crear un array para almacenar los resultados
+$results = @()
+
+# Navegar por cada fila de la tabla y extraer las altitudes y las compañías
+foreach ($row in $dom.getElementsByTagName('tr')) {
+    # Asumiendo que la primera columna es 'Minifilter', la segunda es 'Altitude' y la tercera es 'Company'
+    $altitude = $row.cells[1].innerText
+    $company = $row.cells[2].innerText
+
+    # Solo agregar al array si ambos valores no están vacíos
+    if ($altitude -and $company) {
+        $results += [PSCustomObject]@{
+            Altitude = $altitude
+            Company  = $company
+        }
+    }
+}
+
+# Exportar los resultados a un archivo CSV
+$results | Export-Csv -Path "C:\altitude_company.csv" -NoTypeInformation -Delimiter ","

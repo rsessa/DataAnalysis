@@ -1,0 +1,33 @@
+# Capturar la salida del comando fltmc instances y convertirla en objetos de PowerShell
+$fltmcOutput = fltmc instances | Select-Object -Skip 1 | ForEach-Object {
+    # Dividir la línea en propiedades basadas en espacios
+    $properties = $_ -split '\s+', 7
+    # Verificar si 'VolumeName' no es numérico
+    if ($properties[1] -match '^\D') {
+        # Si 'VolumeName' no es numérico, crear el objeto como está
+        [PSCustomObject]@{
+            Filter       = $properties[0]
+            VolumeName   = $properties[1]
+            Altitude     = $properties[2]
+            InstanceName = $properties[3]
+            Frame        = $properties[4]
+            SprtFtrs     = $properties[5]
+            VStatus      = $properties[6]
+        }
+    }
+    else {
+        # Si 'VolumeName' es numérico, desplazar las propiedades a la derecha
+        [PSCustomObject]@{
+            Filter       = $properties[0]
+            VolumeName   = 'Desconocido'
+            Altitude     = $properties[1]
+            InstanceName = $properties[2]
+            Frame        = $properties[3]
+            SprtFtrs     = $properties[4]
+            VStatus      = $properties[5]
+        }
+    }
+}
+
+# Exportar los objetos a un archivo CSV sin las cabeceras duplicadas
+$fltmcOutput | Export-Csv -Path "C:\fltmc_instances.csv" -NoTypeInformation -Delimiter ","

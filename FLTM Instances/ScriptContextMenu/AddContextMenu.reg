@@ -1,0 +1,35 @@
+Windows Registry Editor Version 5.00
+ 
+; Agregar opciones personalizadas al menú contextual de Windows
+[HKEY_CLASSES_ROOT\Directory\shell]
+@="none"
+ 
+; Configuración para la opción 'Data Analysis'
+[HKEY_CLASSES_ROOT\Directory\shell\Data_Analysis]
+"Icon"="powershell.exe,0"
+"MUIVerb"="Data Analysis"
+"ExtendedSubCommandsKey"="*\\ContextMenus\\Data_Analysis"
+"Version"="0.1"
+ 
+; Configuración del submenú 'Data Analysis'
+[HKEY_CLASSES_ROOT\*\ContextMenus\Data_Analysis]
+ 
+; Configuración para la opción 'Check_FLTMC'
+[HKEY_CLASSES_ROOT\*\ContextMenus\Data_Analysis\Shell\001_Check_FLTMC]
+"MUIVerb"="Check_FLTMC"
+"Icon"="powershell.exe"
+"CommandFlags"=dword:00000020
+ 
+; Comando para la opción 'Check_FLTMC'
+[HKEY_CLASSES_ROOT\*\ContextMenus\Data_Analysis\Shell\001_Check_FLTMC\command]
+@="powershell -noprofile -noexit -ExecutionPolicy Bypass & \"C:\\DataAnalysis\\ProcessAltitudes.ps1\" '%1'"
+ 
+; Configuración para la opción 'Uninstall_ContextMenus'
+[HKEY_CLASSES_ROOT\*\ContextMenus\Data_Analysis\Shell\099_Uninstall_ContextMenus]
+"MUIVerb"="Uninstall ContextMenus"
+"Icon"="powershell.exe"
+"CommandFlags"=dword:00000020
+ 
+; Comando para la opción 'Uninstall_ContextMenus'
+[HKEY_CLASSES_ROOT\*\ContextMenus\Data_Analysis\Shell\099_Uninstall_ContextMenus\command]
+@="powershell -noprofile -noexit -ExecutionPolicy Bypass & \"C:\\DataAnalysis\\Regitro\\UninstallContextMenu.reg\" '%1'"

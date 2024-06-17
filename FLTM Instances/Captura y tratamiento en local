@@ -1,0 +1,101 @@
+# Crear una carpeta con la fecha y hora actual
+$folderName = "C:\FLTMC_" + (Get-Date -Format "yyyyMMddHHmmss")
+New-Item -ItemType Directory -Force -Path $folderName
+
+# Definir la URL de la página web
+$url = "https://learn.microsoft.com/en-us/windows-hardware/drivers/ifs/allocated-altitudes"
+
+# Usar Invoke-WebRequest para obtener el contenido de la página
+$response = Invoke-WebRequest -Uri $url
+
+# Utilizar el DOM del HTML para navegar y extraer los datos necesarios
+$dom = New-Object -ComObject "HTMLFile"
+$dom.IHTMLDocument2_write($response.Content)
+
+# Crear un array para almacenar los resultados
+$results = @()
+
+# Navegar por cada fila de la tabla y extraer las altitudes y las compañías
+foreach ($row in $dom.getElementsByTagName('tr')) {
+    # Asumiendo que la primera columna es 'Minifilter', la segunda es 'Altitude' y la tercera es 'Company'
+    $altitude = $row.cells[1].innerText
+    $company = $row.cells[2].innerText
+
+    # Solo agregar al array si ambos valores no están vacíos
+    if ($altitude -and $company) {
+        $results += [PSCustomObject]@{
+            Altitude = $altitude
+            Company  = $company
+        }
+    }
+}
+
+# Exportar los resultados a un archivo CSV en la carpeta creada
+$results | Export-Csv -Path "$folderName\altitude_company.csv" -NoTypeInformation -Delimiter ","
+
+# Capturar la salida del comando fltmc instances y convertirla en objetos de PowerShell
+$fltmcOutput = fltmc instances | Select-Object -Skip 1 | ForEach-Object {
+    # Dividir la línea en propiedades basadas en espacios
+    $properties = $_ -split '\s+', 7
+    # Verificar si 'VolumeName' no es numérico
+    if ($properties[1] -match '^\D') {
+        # Si 'VolumeName' no es numérico, crear el objeto como está
+        [PSCustomObject]@{
+            Filter       = $properties[0]
+            VolumeName   = $properties[1]
+            Altitude     = $properties[2]
+            InstanceName = $properties[3]
+            Frame        = $properties[4]
+            SprtFtrs     = $properties[5]
+            VStatus      = $properties[6]
+        }
+    }
+    else {
+        # Si 'VolumeName' es numérico, desplazar las propiedades a la derecha
+        [PSCustomObject]@{
+            Filter       = $properties[0]
+            VolumeName   = 'Desconocido'
+            Altitude     = $properties[1]
+            InstanceName = $properties[2]
+            Frame        = $properties[3]
+            SprtFtrs     = $properties[4]
+            VStatus      = $properties[5]
+        }
+    }
+}
+
+# Exportar los objetos a un archivo CSV en la carpeta creada
+$fltmcOutput | Export-Csv -Path "$folderName\fltmc_instances.csv" -NoTypeInformation -Delimiter ","
+
+# Leer el archivo CSV generado por el comando fltmc instances
+$fltmcData = Import-Csv -Path "$folderName\fltmc_instances.csv"
+
+# Filtrar los valores únicos de la columna 'Altitude'
+$uniqueAltitudes = $fltmcData | Select-Object -Unique Altitude
+
+# Leer el archivo CSV generado desde la página web
+$webData = Import-Csv -Path "$folderName\altitude_company.csv"
+
+# Crear un hashtable para un acceso rápido a las compañías por altitud
+$webLookup = @{}
+foreach ($entry in $webData) {
+    $webLookup[$entry.Altitude] = $entry.Company
+}
+
+# Comparar los valores únicos de 'Altitude' con el archivo web y guardar los resultados
+$results = foreach ($altitude in $uniqueAltitudes.Altitude) {
+    $company = if ($webLookup.ContainsKey($altitude)) { $webLookup[$altitude] } else { "Desconocido" }
+    [PSCustomObject]@{
+        Altitude = $altitude
+        Company  = $company
+    }
+}
+
+# Mostrar los resultados por pantalla
+$results | Format-Table -AutoSize
+
+# Exportar los resultados a un archivo CSV en la carpeta creada
+$results | Export-Csv -Path "$folderName\checked_altitudes.csv" -NoTypeInformation -Delimiter ","
+
+# Imprimir un mensaje de éxito
+Write-Host "Los resultados se han guardado en $folderName\checked_altitudes.csv"

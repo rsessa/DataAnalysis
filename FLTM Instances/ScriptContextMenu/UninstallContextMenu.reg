@@ -1,0 +1,8 @@
+# Asegúrate de ejecutar este script como administrador
+# Definir la ruta del archivo de desinstalación
+$regFilePath = "C:\DataAnalysis\UninstallContextMenu.reg"
+# Ejecutar el archivo de registro para eliminar las opciones de menú contextual
+Start-Process regedit.exe -ArgumentList "/s $regFilePath" -Wait
+Write-Host "Desinstalación completada. Las opciones de menú contextual han sido eliminadas."
+# Mantener la ventana abierta
+Read-Host "Presiona Enter para cerrar la ventana"

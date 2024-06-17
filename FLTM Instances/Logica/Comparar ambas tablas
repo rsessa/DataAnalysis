@@ -1,0 +1,36 @@
+# Leer el archivo CSV generado por el comando fltmc instances
+$fltmcData = Import-Csv -Path "C:\fltmc_instances.csv"
+
+# Filtrar los valores únicos de la columna 'Altitude'
+$uniqueAltitudes = $fltmcData | Select-Object -Unique Altitude
+
+# Leer el archivo CSV generado desde la página web
+$webData = Import-Csv -Path "C:\altitude_company.csv"
+
+# Crear un hashtable para un acceso rápido a las compañías por altitud
+$webLookup = @{}
+foreach ($entry in $webData) {
+    $webLookup[$entry.Altitude] = $entry.Company
+}
+
+# Comparar los valores únicos de 'Altitude' con el archivo web y guardar los resultados
+$results = foreach ($altitude in $uniqueAltitudes.Altitude) {
+    $company = if ($webLookup.ContainsKey($altitude)) { $webLookup[$altitude] } else { "Desconocido" }
+    [PSCustomObject]@{
+        Altitude = $altitude
+        Company  = $company
+    }
+}
+
+# Mostrar los resultados por pantalla
+$results | Format-Table -AutoSize
+
+# Exportar los resultados a un archivo CSV en C:\
+$results | Export-Csv -Path "C:\checked_altitudes.csv" -NoTypeInformation -Delimiter ","
+
+# Imprimir un mensaje de éxito
+Write-Host "Los resultados se han guardado en C:\checked_altitudes.csv"
+
+
+
+
