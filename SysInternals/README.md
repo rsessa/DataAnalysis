@@ -43,7 +43,8 @@ PsPing es una herramienta para medir la latencia, el jitter, la pérdida de paqu
 
 ## Artículos
 
-### Uso de TCPView para Troubleshooting de problemas de red
+### [Uso de TCPView para Troubleshooting de problemas de red](https://github.com/rsessa/DataAnalysis/blob/main/SysInternals%2FTCPView%2FUsos%20para%20Troubleshooting.md)
+
 En este artículo, exploramos cómo utilizar TCPView para monitorear y analizar las conexiones TCP y UDP en tiempo real.
 
 
