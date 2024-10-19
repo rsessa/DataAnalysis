@@ -1,0 +1,8 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\Directory\shell\GenerarGraficoPCAP]
+@="Generar Grafico de Red"
+
+[HKEY_CLASSES_ROOT\Directory\shell\GenerarGraficoPCAP\command]
+@="\"F:\\Dev\\DataAnalysis\\NetworkDiagram\\EjecutarScript.bat\" \"%1\""
+
